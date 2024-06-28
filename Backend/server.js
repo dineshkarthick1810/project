@@ -54,7 +54,8 @@ app.get("/",(req,res)=>{
     Userdata()
 
 
-
-app.listen("3001",()=>{
-    console.log("server started")
-})
+// Bind to the port specified by Render
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+});
