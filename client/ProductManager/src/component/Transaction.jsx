@@ -31,7 +31,7 @@ const Transaction = ({ theme, setTheme }) => {
 
     useEffect(() => {
         const FetchData = async () => {
-            const values = await fetch("http://localhost:3001/")
+            const values = await fetch("https://backend-g9w8.onrender.com")
                 .then((res) => res.json())
                 .then((val) => {
                     setOriginalData(val);
