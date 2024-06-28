@@ -13,7 +13,7 @@ const Transaction = ({ theme, setTheme }) => {
     // For maintaining the input values
     const [input, setInputvalue] = useState("");
 
-///for maintaining the total price and sold items and not sold items
+    // For maintaining the total price and sold items and not sold items
     const [totalprice, setTotalPrice] = useState(0);
     const [soldItems, setSoldItems] = useState(0);
     const [notSoldItems, setNotSoldItems] = useState(0);
@@ -22,16 +22,12 @@ const Transaction = ({ theme, setTheme }) => {
     const [OriginalDatas, setOriginalData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [currentItems, setCurrentItems] = useState([]);
-//for barchart datas
+    
+    // For barchart datas
     const [selectedMonthRangeItem, setPriceRangesItems] = useState([]);
 
-
-
-
-
-    //for maintain loading state
-
-    const [loading, setLoading] = useState(true)
+    // For maintaining loading state
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const FetchData = async () => {
@@ -40,7 +36,7 @@ const Transaction = ({ theme, setTheme }) => {
                 .then((val) => {
                     setOriginalData(val);
                     setFilteredData(val);
-                    setLoading(false)
+                    setLoading(false);
                 });
         };
         FetchData();
@@ -83,36 +79,24 @@ const Transaction = ({ theme, setTheme }) => {
     const handleFilteringDatas = (selectedMonth) => {
         const filteredData = OriginalDatas.filter((val) => getMonth(val.dateOfSale) === selectedMonth);
         setFilteredData(filteredData);
-       
-        
         updatePriceList(filteredData);
         updateStatistics(filteredData);
-
     };
-    //for filterig the particular data of typing the input box
-    const handleInputValue = (e) => {
-        setInputvalue(e.target.value)
-        SearchFilter(e.target.value)
 
-    }
+    // For filtering the particular data by typing in the input box
+    const handleInputValue = (e) => {
+        setInputvalue(e.target.value);
+        SearchFilter(e.target.value);
+    };
 
     const SearchFilter = (value) => {
         if (value && dropdown !== "Select Month") {
             const filterData = filteredData.filter((res) => {
-                return res.title.toLowerCase().includes(value) || res.description.toLowerCase().includes(value) || String(res.price).includes(value)
-            })
-            setFilteredData(filterData)
-            
+                return res.title.toLowerCase().includes(value) || res.description.toLowerCase().includes(value) || String(res.price).includes(value);
+            });
+            setFilteredData(filterData);
         }
-
-
-
-
-
-
-
-    }
-
+    };
 
     const updatePriceList = (data) => {
         let RangeHundred = 0;
@@ -156,10 +140,6 @@ const Transaction = ({ theme, setTheme }) => {
         setPriceRangesItems([RangeHundred, RangeTwoHundred, RangeThreeHundred, RangeFourHundred, RangeFiveHundred, RangeSixHundred, RangeSevenHundred, RangeEightHundred, RangeNineHundred, ThosandAbove, above]);
     };
 
-
-
-    //for statistics for dynamic value
-
     const updateStatistics = (data) => {
         const total = data.reduce((total, val) => total + val.price, 0);
         const sold = data.filter((val) => val.sold).length;
@@ -170,23 +150,14 @@ const Transaction = ({ theme, setTheme }) => {
         setNotSoldItems(notSold);
     };
 
-    
-
-
-    
-    
-    
-
-
-
-
     return (
         <div className={theme ? 'container-fluid forcontainer bg-dark' : 'container-fluid forcontainer bg-light'}>
-            <nav className='navbar navbar-expand-lg shadow ' style={{ background: "#6f42c1", position: "relative" }}>
+            <nav className='navbar navbar-expand-lg shadow ' style={{ background: "#6f42c1", position: "relative" ,flexWrap:"nowrap"}}>
                 <a href='' className='navbar-brand forlogo text-white ms-3'>Transaction Dashboard</a>
                 <button className="btn dropdown-toggle me-5 mt-2" style={{ color: "white", padding: "10px", outline: "none", border: "none" }} data-bs-toggle="dropdown" aria-expanded="false">
                     <ContrastIcon />
                 </button>
+                
                 <div className='forposition'>
                     <ul className="dropdown-menu dropdown-menu-dark">
                         <li onClick={() => setTheme(true)}><a className="dropdown-item" style={{ fontWeight: "bold" }} href="#"><span className='me-2'><DarkModeIcon /></span>Dark</a></li>
@@ -216,46 +187,50 @@ const Transaction = ({ theme, setTheme }) => {
                         </div>
 
                         {/* For table */}
+                        {loading ? (
+                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                <div className="spinner-border text-primary text-center" role="status" style={{ height: "200px", width: "200px" }}>
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className='mt-5 table-scrolling' >
+                                <table className='table table-striped table-hover'>
+                                    <thead>
+                                        <tr className='table-primary' style={{ height: "60px" }}>
+                                            <th>Id</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Price</th>
+                                            <th>Category</th>
+                                            <th>Image</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className={theme ? "table-light" : "table-dark"}>
+                                        {currentItems.map((val) => {
+                                            return (
+                                                <tr style={{ height: "60px" }}>
+                                                    <td>{val.id}</td>
+                                                    <td>{val.title}</td>
+                                                    <td>{val.description.length > 80 ? val.description.substring(0, 80) + "..." : val.description}</td>
+                                                    <td>{val.price}</td>
+                                                    <td>{val.category}</td>
+                                                    <td><img src={val.image} className='img-fluid' style={{ height: "100px", width: "100px", borderRadius: "50%", backgroundSize: "cover", border: "2px solid blue" }} /></td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
 
-                        {loading ? <div style={{ display: "flex", justifyContent: "center" }}><div className="spinner-border text-primary text-center" role="status" style={{ height: "200px", width: "200px" }}>
-                            <span className="visually-hidden">Loading...</span>
-                        </div></div> : <div className='mt-5'>
-                            <table className='table table-striped table-hover'>
-                                <thead>
-                                    <tr className='table-primary' style={{ height: "60px" }}>
-                                        <th>Id</th>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Price</th>
-                                        <th>Category</th>
-                                        <th>Image</th>
-                                    </tr>
-                                </thead>
-                                <tbody className={theme ? "table-light" : "table-dark"}>
-                                    {currentItems.map((val) => {
-                                        return (
-                                            <tr style={{ height: "60px" }}>
-                                                <td>{val.id}</td>
-                                                <td>{val.title}</td>
-                                                <td>{val.description.length > 80 ? val.description.substring(0, 80) + "..." : val.description}</td>
-                                                <td>{val.price}</td>
-                                                <td>{val.category}</td>
-                                                <td><img src={val.image} style={{ height: "100px", width: "100px", borderRadius: "50%", backgroundSize: "cover", border: "2px solid blue" }} /></td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-
-                            <nav aria-label="Page navigation example" style={{ display: "flex", justifyContent: "center" }} className='mt-3'>
-                                <ul className="pagination">
-                                    {numbers.map((val, index) => {
-                                        return <li className="page-item text-white" onClick={() => handlePageClick(index)}><a className="page-link" href="#">{val}</a></li>;
-                                    })}
-                                </ul>
-                            </nav>
-                        </div>}
-
+                                <nav aria-label="Page navigation example" style={{ display: "flex", justifyContent: "center" }} className='mt-3'>
+                                    <ul className="pagination">
+                                        {numbers.map((val, index) => {
+                                            return <li className="page-item text-white" onClick={() => handlePageClick(index)}><a className="page-link" href="#">{val}</a></li>;
+                                        })}
+                                    </ul>
+                                </nav>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -268,7 +243,7 @@ const Transaction = ({ theme, setTheme }) => {
                 {/* Statistics */}
                 <div className='forstatistics mt-3'>
                     <h2 className={theme ? "text-white text-center mb-5" : "text-dark text-center mb-5"}>Statistics</h2>
-                    <Statistic totalprice={totalprice} soldItems={soldItems} notSoldItems={notSoldItems}/>
+                    <Statistic totalprice={totalprice} soldItems={soldItems} notSoldItems={notSoldItems} />
                 </div>
             </div>
         </div>
